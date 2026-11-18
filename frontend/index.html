@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Bangla Handwritten Text Recognition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <strong>Bangla OCR Studio</strong>
+          <span class="badge">DTW template learning</span>
+        </div>
+        <div class="topbar-actions">
+          <button id="upload-button" type="button">Upload file</button>
+          <button id="show-predictions-button" type="button" class="secondary" disabled>Show full prediction</button>
+          <button id="train-button" type="button" class="secondary">Train</button>
+          <button id="theme-toggle" type="button" class="secondary">Toggle theme</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel canvas-panel">
+          <div class="panel-header">
+            <h2>Pen trace viewer</h2>
+            <div class="canvas-controls" aria-label="Canvas zoom controls">
+              <button id="full-page-view" type="button" class="view-mode">Full page</button>
+              <button id="selected-word-view" type="button" class="view-mode active">Selected word</button>
+              <button id="zoom-out" type="button" aria-label="Zoom out">−</button>
+              <span id="zoom-level" aria-live="polite">100%</span>
+              <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+              <button id="zoom-reset" type="button">Fit</button>
+            </div>
+          </div>
+          <canvas id="drawing-canvas" width="1400" height="620"></canvas>
+          <section class="box-editing" aria-labelledby="box-editing-title">
+            <h3 id="box-editing-title">Correct word boxes</h3>
+            <p id="box-editing-help">Choose an action, then click or drag on the full-page plot. Corrections save automatically.</p>
+            <div class="box-editing-controls">
+              <button id="box-select-mode" type="button" class="active" disabled>Select boxes</button>
+              <button id="box-redetect-action" type="button" disabled>Re-detect boxes</button>
+              <button id="box-create-mode" type="button" disabled>Draw missing box</button>
+              <button id="box-delete-action" type="button" disabled>Delete selected</button>
+              <button id="box-cancel-action" type="button">Cancel</button>
+            </div>
+            <p class="segmentation-help">Box edits save automatically. After every stroke is assigned to the correct word, press Train to teach the word-boundary model. Re-upload the same file to restore its saved boxes.</p>
+            <p id="box-editing-status" class="action-status" role="status" aria-live="polite"></p>
+          </section>
+          <p id="upload-status" class="upload-status" role="status" aria-live="polite">
+            Upload a CSV or TXT file. Choose Selected word for a large view; scroll to zoom and drag to pan.
+          </p>
+        </section>
+
+        <aside class="panel words-panel">
+          <div class="panel-header">
+            <h2>Word viewer</h2>
+          </div>
+          <div class="word-viewer">
+            <div class="viewer-actions">
+              <button id="previous-word" type="button" disabled>← Previous</button>
+              <button id="next-word" type="button" disabled>Next →</button>
+            </div>
+            <p id="word-counter" class="word-counter">Word 0 / 0</p>
+            <div class="prediction-box">
+              <span class="label">Prediction</span>
+              <strong id="prediction-text">Unknown</strong>
+              <small id="prediction-engine">Model not trained</small>
+              <div class="confidence-bar"><span></span></div>
+            </div>
+            <label>
+              Correct Bangla word
+              <input id="correct-word" type="text" value="" placeholder="বাংলা শব্দ লিখুন" />
+            </label>
+            <section class="segmentation-section" aria-labelledby="segmentation-heading">
+              <div>
+                <h3 id="segmentation-heading">Segmentation</h3>
+                <p class="segmentation-help">Characters in this word. Edit the collection if needed.</p>
+              </div>
+              <div id="char-chips" class="char-chips" aria-live="polite"></div>
+              <div class="add-char-row">
+                <label class="add-char-label" for="add-char-input">Add character</label>
+                <input id="add-char-input" type="text" placeholder="একটি অক্ষর" />
+                <button id="add-char-button" type="button">Add</button>
+              </div>
+            </section>
+            <div class="button-row">
+              <button id="save-next-button" type="button" class="primary" disabled>Save &amp; Next</button>
+              <button id="skip-button" type="button" disabled>Skip</button>
+              <button id="bad-sample-button" type="button" disabled>Bad sample</button>
+            </div>
+            <p id="action-status" class="action-status" role="status" aria-live="polite"></p>
+          </div>
+        </aside>
+      </main>
+      <section id="full-script-view" class="panel full-script-view" aria-labelledby="full-script-title" hidden>
+        <div class="panel-header">
+          <div>
+            <h2 id="full-script-title">Full script prediction</h2>
+            <p id="full-script-status" class="segmentation-help" role="status" aria-live="polite">
+              Predictions for all detected words will appear here.
+            </p>
+          </div>
+          <button id="back-to-viewer-button" type="button">Back to viewer</button>
+        </div>
+        <section class="full-script-plot" aria-labelledby="full-script-plot-title">
+          <h3 id="full-script-plot-title">Uploaded handwriting plot</h3>
+          <div id="full-script-plot-mount"></div>
+        </section>
+        <section class="full-script-transcript" aria-labelledby="full-script-transcript-title">
+          <h3 id="full-script-transcript-title">Script</h3>
+          <p lang="bn">উক্তি আছে কলকাতা শহরে চেষ্টা করলে বাঘের দুধও পাওয়া সম্ভব। দুঃখের বিষয় এটি গুজব মাত্র। কিন্তু যদি চেরিয়াখানা চত্বরেই একটা রেস্তোরা থাকত যেখানে মুগ্ধ হতেন ময়ূর বা ঈগলের ডিমের অমলেট খেয়ে ? অক্লেশে যদি মিলত পছন্দ মত বাঘ, ভল্লুক কিংম্বা হাতির গ্লাস ভর্তি ( বিজ্ঞান সম্মত পদ্ধতিতে জীবাণুমুক্ত ) ফুটন্ত দুধ পানের সন্তোষ প্রাপ্তি? কচি পাঁঠার ঝোলের সাথেই মধ্যাহ্নে বিক্রি হত যদি সুসিদ্ধ মাংসের কষা রান্না। রাঙা আলু আর লঙ্কা দিয়ে রন্ধিত উঠের মাংসের কোপ্তা খেয়ে ওষ্ঠ ও জিহ্বার জ্বলুনীর ঝঞ্ঝাটে কাটাতে যদি পেতেন মহৌষধ স্বরূপ সিন্ধু ঘোঠ কার গাঢ় দুধের মিষ্টি ঠান্ডা দৈ ? ঊর্ধ্বগামী বিলের কথা স্মরণ করে সশব্দে ব্রহ্মজ্ঞানী সুলভ ঔদাসীন্য ভরা ঢেঁকুর তুলে অল্পেই কি রনে ভঙ্গ দিতেন না পরস্মৈপদী বলে একাধিক নিষ্ঠায় সম্পূর্ণ করতেন পঞ্চ ব্যাঞ্জন যোগে ক্ষুৎ নিবৃত্তি পরিচ্ছেদ</p>
+        </section>
+        <h3 class="full-script-words-title">Detected words</h3>
+        <ol id="full-script-words" class="full-script-words"></ol>
+      </section>
+    </div>
+
+    <input id="file-input" type="file" accept=".csv,.txt" hidden />
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

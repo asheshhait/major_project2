@@ -1,0 +1,4 @@
+path: "C:/Users/t9080/OneDrive/Desktop/Bangla_Text_Recognition_ONline_Method/bangla-ohr/data/yolo11_character_dataset"
+train: images/train
+val: images/val
+names: ["ংসা", "অ", "আ", "ই", "ঈ", "উ", "উন", "ঊ", "ঋ", "এ", "এন", "ঐ", "ও", "ঔ", "ক", "ক্ত", "খ", "গ", "ঘ", "চ", "ছ", "জ", "ঝ", "ঞ", "ট", "ঠ", "ড", "ঢ", "ণ", "ত", "থ", "দ", "দ্র", "ধ", "ন", "প", "ফ", "ব", "বি", "ভ", "ম", "য", "র", "রি", "ল", "স", "হ", "০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"]

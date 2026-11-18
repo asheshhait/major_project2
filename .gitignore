@@ -1,0 +1,19 @@
+# Model weights
+*.pt
+*.pth
+*.onnx
+
+# Generated training artifacts
+data/checkpoints/
+data/yolo11_runs/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local application data
+*.db
+*.sqlite3
